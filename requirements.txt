@@ -1,0 +1,12 @@
+daytona
+python-dotenv
+fastapi
+uvicorn
+websockets
+aiohttp
+pydantic
+GitPython
+google-generativeai
+python-multipart
+jinja2
+
