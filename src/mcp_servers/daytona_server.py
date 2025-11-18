@@ -3,6 +3,7 @@ from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
 from daytona import Daytona, DaytonaConfig
 import os
+import sys
 
 
 @dataclass
@@ -41,7 +42,8 @@ class DaytonaServer:
             self.sandbox = self.daytona.create()
             return True
         except Exception as e:
-            print(f"Error creating sandbox: {e}")
+            sys.stderr.write(f"Error creating sandbox: {e}\n")
+            sys.stderr.flush()
             return False
     
     def execute_code(self, code: str, language: str = "python") -> ExecutionResult:
@@ -114,7 +116,8 @@ class DaytonaServer:
                 self.sandbox.delete()
                 self.sandbox = None
             except Exception as e:
-                print(f"Error cleaning up sandbox: {e}")
+                sys.stderr.write(f"Error cleaning up sandbox: {e}\n")
+                sys.stderr.flush()
     
     def __del__(self):
         """Cleanup on deletion."""

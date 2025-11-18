@@ -1,12 +1,11 @@
-daytona
+# Core MCP dependencies (required)
+mcp
 python-dotenv
-fastapi
-uvicorn
-websockets
-aiohttp
 pydantic
 GitPython
 google-generativeai
-python-multipart
-jinja2
+
+# MCP Server dependencies
+daytona
+aiohttp
 

@@ -2,6 +2,7 @@
 import google.generativeai as genai
 from typing import Dict, Any, Optional, List
 import json
+import sys
 from dataclasses import dataclass
 
 from src.mcp_servers.coderabbit import CodeRabbitServer
@@ -56,8 +57,23 @@ class MCPOrchestrator:
         Returns:
             DocumentationUpdate with generated documentation
         """
+        # Validate input
+        if not diff_content or not diff_content.strip():
+            raise ValueError("Diff content is empty")
+        
         # Step 1: Structure code changes using CodeRabbit
         structured_changes = self.coderabbit.structure_code_changes(diff_content, repo_path)
+        
+        # Check if we have any changes
+        if not structured_changes.get('changes') or len(structured_changes.get('changes', [])) == 0:
+            # Return a basic documentation update for empty changes
+            return DocumentationUpdate(
+                file_path="DOCUMENTATION.md",
+                content="# Documentation\n\nNo code changes detected to document.",
+                code_snippets=[],
+                evaluation_score=0.5,
+                ready_to_commit=False
+            )
         
         # Step 2: Use Gemini to draft documentation
         documentation = self._draft_documentation(structured_changes)
@@ -99,7 +115,8 @@ class MCPOrchestrator:
                 response = self.gemini_client.generate_content(prompt)
                 return response.text
             except Exception as e:
-                print(f"Error generating documentation with Gemini: {e}")
+                sys.stderr.write(f"Error generating documentation with Gemini: {e}\n")
+                sys.stderr.flush()
                 return self._fallback_documentation(structured_changes)
         else:
             return self._fallback_documentation(structured_changes)
@@ -233,7 +250,8 @@ Please revise the documentation to address these issues. Generate improved docum
                     response = self.gemini_client.generate_content(correction_prompt)
                     documentation = response.text
                 except Exception as e:
-                    print(f"Error in self-correction: {e}")
+                    sys.stderr.write(f"Error in self-correction: {e}\n")
+                    sys.stderr.flush()
                     break
             
             # Re-evaluate

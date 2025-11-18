@@ -3,6 +3,7 @@ import git
 from typing import Optional, List, Dict, Any
 from pathlib import Path
 import os
+import sys
 
 
 class GitHandler:
@@ -22,7 +23,8 @@ class GitHandler:
             try:
                 self.repo = git.Repo.init(self.repo_path)
             except Exception as e:
-                print(f"Error initializing Git repository: {e}")
+                sys.stderr.write(f"Error initializing Git repository: {e}\n")
+                sys.stderr.flush()
                 self.repo = None
     
     def get_diff(self, branch: str = "main", compare_branch: Optional[str] = None) -> str:
@@ -48,7 +50,8 @@ class GitHandler:
             
             return diff
         except Exception as e:
-            print(f"Error getting diff: {e}")
+            sys.stderr.write(f"Error getting diff: {e}\n")
+            sys.stderr.flush()
             return ""
     
     def get_uncommitted_changes(self) -> str:
@@ -59,7 +62,8 @@ class GitHandler:
         try:
             return self.repo.git.diff()
         except Exception as e:
-            print(f"Error getting uncommitted changes: {e}")
+            sys.stderr.write(f"Error getting uncommitted changes: {e}\n")
+            sys.stderr.flush()
             return ""
     
     def commit_documentation(
@@ -96,7 +100,8 @@ class GitHandler:
             
             return True
         except Exception as e:
-            print(f"Error committing documentation: {e}")
+            sys.stderr.write(f"Error committing documentation: {e}\n")
+            sys.stderr.flush()
             return False
     
     def push_changes(self, branch: str = "main", remote: str = "origin") -> bool:
@@ -109,7 +114,8 @@ class GitHandler:
             origin.push(branch)
             return True
         except Exception as e:
-            print(f"Error pushing changes: {e}")
+            sys.stderr.write(f"Error pushing changes: {e}\n")
+            sys.stderr.flush()
             return False
     
     def get_recent_commits(self, limit: int = 10) -> List[Dict[str, Any]]:
@@ -128,7 +134,8 @@ class GitHandler:
                 })
             return commits
         except Exception as e:
-            print(f"Error getting commits: {e}")
+            sys.stderr.write(f"Error getting commits: {e}\n")
+            sys.stderr.flush()
             return []
     
     def watch_changes(self, callback, branch: str = "main"):

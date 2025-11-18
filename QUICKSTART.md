@@ -1,13 +1,14 @@
-# Quick Start Guide
+# Quick Start Guide - MCP Server for Cursor
 
 ## Prerequisites
 
 - Python 3.9 or higher
 - Git installed
-- API keys for:
-  - Google Gemini API
-  - Daytona API
-  - Galileo.ai API
+- Cursor IDE
+- API keys (optional - system works with fallbacks):
+  - Google Gemini API (recommended)
+  - Daytona API (optional)
+  - Galileo.ai API (optional)
 
 ## Setup Steps
 
@@ -17,13 +18,33 @@
 pip install -r requirements.txt
 ```
 
-### 2. Configure Environment
+### 2. Configure Environment (Optional)
 
-Copy `.env.example` to `.env` and fill in your API keys:
+Create a `.env` file with your API keys:
 
 ```bash
-cp .env.example .env
-# Edit .env with your API keys
+# Create .env file
+# Gemini Configuration (recommended)
+GEMINI_API_KEY=your_gemini_api_key
+
+# Daytona Configuration (optional)
+DAYTONA_API_KEY=your_daytona_api_key
+DAYTONA_API_URL=https://app.daytona.io/api
+
+# Galileo Configuration (optional)
+GALILEO_API_KEY=your_galileo_api_key
+GALILEO_PROJECT_ID=your_project_id
+
+# CodeRabbit Configuration (optional)
+CODERABBIT_API_KEY=your_coderabbit_api_key
+
+# Git Configuration
+GIT_REPO_PATH=.
+GIT_BRANCH=main
+
+# Quality Thresholds
+MIN_DOC_QUALITY_SCORE=0.7
+MAX_SELF_CORRECTION_ATTEMPTS=3
 ```
 
 ### 3. Initialize Git Repository (if not already)
@@ -32,52 +53,75 @@ cp .env.example .env
 git init
 ```
 
-### 4. Start the Server
+### 4. Set Up MCP in Cursor
+
+Run the configuration helper:
 
 ```bash
-python main.py
+python update_mcp_config.py
 ```
 
-The server will start on `http://localhost:8000`
+Or manually edit your Cursor MCP configuration:
+- **Windows**: `%USERPROFILE%\.cursor\mcp.json`
+- **macOS/Linux**: `~/.cursor/mcp.json`
 
-## Usage
+Add:
 
-### Web Interface
-
-1. Open `http://localhost:8000` in your browser
-2. Click "Process Code Changes" to generate documentation from Git diff
-3. Edit the documentation in the editor
-4. Click "Save Documentation" to save locally
-5. Click "Commit to Git" to commit changes
-
-### API Usage
-
-#### Process Code Changes
-
-```bash
-curl -X POST http://localhost:8000/api/process-changes \
-  -H "Content-Type: application/json" \
-  -d '{
-    "diff_content": "diff --git a/file.py b/file.py\n...",
-    "repo_path": "."
-  }'
+```json
+{
+  "mcpServers": {
+    "live-document-editor": {
+      "command": "python",
+      "args": ["C:\\path\\to\\HackSprint\\mcp_server.py"],
+      "env": {}
+    }
+  }
+}
 ```
 
-#### Update Documentation
+**Important**: Update the path in `args` to match your actual project path.
 
-```bash
-curl -X POST http://localhost:8000/api/update-documentation \
-  -H "Content-Type: application/json" \
-  -d '{
-    "file_path": "DOCUMENTATION.md",
-    "content": "# Documentation\n\n...",
-    "commit_message": "docs: Update documentation"
-  }'
+### 5. Restart Cursor
+
+After updating the configuration, restart Cursor completely to load the MCP server.
+
+## Usage in Cursor
+
+Once connected, use the MCP tools directly in Cursor's chat:
+
+### Process Code Changes
+
+```
+Use the process_code_changes tool to generate documentation for my recent code changes
 ```
 
-### Python Script Usage
+### Get Git Diff
 
-See `example_usage.py` for a complete example:
+```
+Use the get_git_diff tool to show me the current Git diff
+```
+
+### Get Recent Commits
+
+```
+Use the get_recent_commits tool with limit 5 to show me the last 5 commits
+```
+
+### Update Documentation
+
+```
+Use the update_documentation tool to update README.md with [your content]
+```
+
+### Commit Documentation
+
+```
+Use the commit_documentation tool to commit the documentation changes
+```
+
+## Python Script Usage
+
+See `example_usage.py` for programmatic usage:
 
 ```python
 from src.orchestrator import MCPOrchestrator
@@ -93,10 +137,21 @@ The system includes fallback mechanisms:
 - If Gemini is unavailable, basic documentation is generated
 - CodeRabbit uses local parsing (no API required)
 - Galileo uses local evaluation algorithms
+- Daytona is optional for code execution
 
 However, for best results, configure all API keys.
 
 ## Troubleshooting
+
+### MCP Server Not Connecting
+
+1. **Check the path**: Ensure the path in `mcp.json` is correct
+2. **Check Python path**: Make sure `python` is in your PATH
+3. **Check dependencies**: Ensure all dependencies are installed:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Check logs**: Look for errors in Cursor's Developer Console (`Ctrl+Shift+I`)
 
 ### Daytona Sandbox Creation Fails
 - Verify `DAYTONA_API_KEY` is set correctly
@@ -115,8 +170,7 @@ However, for best results, configure all API keys.
 
 ## Next Steps
 
+- Read `MCP_SETUP.md` for detailed MCP setup instructions
 - Read `ARCHITECTURE.md` for system design details
 - Read `SYSTEM_DESIGN.md` for workflow diagrams
 - Customize quality thresholds in `.env`
-- Integrate with CI/CD pipelines for automated documentation
-

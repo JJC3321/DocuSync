@@ -29,10 +29,6 @@ class Config(BaseModel):
     git_repo_path: Optional[str] = os.getenv("GIT_REPO_PATH", ".")
     git_branch: str = os.getenv("GIT_BRANCH", "main")
     
-    # Server Configuration
-    host: str = os.getenv("HOST", "0.0.0.0")
-    port: int = int(os.getenv("PORT", "8000"))
-    
     # Quality Thresholds
     min_doc_quality_score: float = float(os.getenv("MIN_DOC_QUALITY_SCORE", "0.7"))
     max_self_correction_attempts: int = int(os.getenv("MAX_SELF_CORRECTION_ATTEMPTS", "3"))

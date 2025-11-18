@@ -147,4 +147,31 @@ class CodeRabbitServer:
             return f"Removed {len(removed)} lines"
         
         return f"Modified: {len(added)} lines added, {len(removed)} lines removed"
+    
+    def _analyze_changes(self, changes: List[CodeChange]) -> Dict[str, Any]:
+        """Analyze code changes and provide overall summary."""
+        if not changes:
+            return {
+                "total_files": 0,
+                "total_lines_added": 0,
+                "total_lines_removed": 0,
+                "languages": [],
+                "complexity_summary": {}
+            }
+        
+        total_added = sum(len(change.lines_added) for change in changes)
+        total_removed = sum(len(change.lines_removed) for change in changes)
+        languages = list(set(change.language for change in changes))
+        complexity_counts = {}
+        
+        for change in changes:
+            complexity_counts[change.complexity] = complexity_counts.get(change.complexity, 0) + 1
+        
+        return {
+            "total_files": len(changes),
+            "total_lines_added": total_added,
+            "total_lines_removed": total_removed,
+            "languages": languages,
+            "complexity_summary": complexity_counts
+        }
 

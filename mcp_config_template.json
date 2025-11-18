@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "galileo_mcp_server": {
+      "url": "https://api.galileo.ai/mcp/http/mcp",
+      "headers": {
+        "Accept": "text/event-stream"
+      }
+    },
+    "live-document-editor": {
+      "command": "python",
+      "args": ["C:\\Users\\Jian Jin Chen\\Documents\\Code\\HackSprint\\mcp_server.py"],
+      "env": {}
+    }
+  }
+}
+

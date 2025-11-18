@@ -1,6 +1,6 @@
-# Live Document Editor for Codebases
+# Live Document Editor - MCP Server for Cursor
 
-An intelligent live document editor that automatically generates and updates documentation based on code changes, using MCP (Model Context Protocol) orchestration with Gemini, CodeRabbit, Daytona, and Galileo.ai.
+An intelligent MCP (Model Context Protocol) server that automatically generates and updates documentation based on code changes, designed to work directly with Cursor.
 
 ## Features
 
@@ -9,53 +9,30 @@ An intelligent live document editor that automatically generates and updates doc
 - ✅ **Code Execution**: Daytona executes code snippets in secure sandboxes
 - 📊 **Quality Evaluation**: Galileo.ai evaluates documentation accuracy and tone
 - 🔄 **Self-Correction**: Automatic improvement loop when quality thresholds aren't met
-- 💻 **Live Editor**: Web-based interface for real-time documentation editing
 - 🔀 **Git Integration**: Automatic commits and version control
+- 🎯 **MCP Integration**: Works directly in Cursor via Model Context Protocol
 
-## Architecture
+## Quick Start (MCP for Cursor)
 
-```
-Git Repository → MCP Client (Gemini Orchestrator)
-    ↓
-    ├─ CodeRabbit Server: Structure code changes
-    ├─ Draft Documentation: Generate docs with code snippets
-    ├─ Daytona Server: Execute code snippets
-    ├─ Galileo Server: Evaluate documentation quality
-    └─ Self-Correction Loop: Improve until quality threshold met
-    ↓
-Final Output → Git Repository (Commit to main)
-```
+### 1. Install Dependencies
 
-## Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd HackSprint
-```
-
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Set up environment variables:
-Create a `.env` file:
+### 2. Configure Environment
+
+Create a `.env` file with your API keys (optional - system works with fallbacks):
+
 ```env
-# Gemini Configuration
+# Gemini Configuration (recommended)
 GEMINI_API_KEY=your_gemini_api_key
 
-# Daytona Configuration
+# Daytona Configuration (optional)
 DAYTONA_API_KEY=your_daytona_api_key
 DAYTONA_API_URL=https://app.daytona.io/api
 
-# Galileo Configuration
+# Galileo Configuration (optional)
 GALILEO_API_KEY=your_galileo_api_key
 GALILEO_PROJECT_ID=your_project_id
 
@@ -66,69 +43,98 @@ CODERABBIT_API_KEY=your_coderabbit_api_key
 GIT_REPO_PATH=.
 GIT_BRANCH=main
 
-# Server Configuration
-HOST=0.0.0.0
-PORT=8000
-
 # Quality Thresholds
 MIN_DOC_QUALITY_SCORE=0.7
 MAX_SELF_CORRECTION_ATTEMPTS=3
 ```
 
-## Usage
+### 3. Set Up MCP in Cursor
 
-1. Start the server:
+Run the configuration helper:
+
 ```bash
-python main.py
+python update_mcp_config.py
 ```
 
-2. Open your browser:
-```
-http://localhost:8000
-```
+Or manually edit `%USERPROFILE%\.cursor\mcp.json` (Windows) or `~/.cursor/mcp.json` (macOS/Linux):
 
-3. Use the web interface to:
-   - Process code changes
-   - Edit documentation
-   - Save and commit changes
-
-## API Endpoints
-
-### POST `/api/process-changes`
-Process code changes and generate documentation.
-
-**Request:**
 ```json
 {
-  "diff_content": "git diff content...",
-  "repo_path": "."
+  "mcpServers": {
+    "live-document-editor": {
+      "command": "python",
+      "args": ["C:\\path\\to\\HackSprint\\mcp_server.py"],
+      "env": {}
+    }
+  }
 }
 ```
 
-**Response:**
-```json
-{
-  "documentation": "Generated documentation...",
-  "file_path": "DOCUMENTATION.md",
-  "evaluation_score": 0.85,
-  "ready_to_commit": true
-}
+### 4. Restart Cursor
+
+After updating the configuration, restart Cursor completely to load the MCP server.
+
+## Usage in Cursor
+
+Once connected, you can use these MCP tools directly in Cursor:
+
+### Available MCP Tools
+
+1. **`process_code_changes`** - Process Git code changes and generate documentation
+   ```
+   Use the process_code_changes tool to generate documentation for my recent code changes
+   ```
+
+2. **`get_git_diff`** - Get Git diff for the current repository
+   ```
+   Use the get_git_diff tool to show me the current Git diff
+   ```
+
+3. **`update_documentation`** - Update or create a documentation file
+   ```
+   Use the update_documentation tool to update README.md with [content]
+   ```
+
+4. **`commit_documentation`** - Commit documentation changes to Git
+   ```
+   Use the commit_documentation tool to commit the documentation
+   ```
+
+5. **`get_recent_commits`** - Get recent Git commits
+   ```
+   Use the get_recent_commits tool to show me the last 5 commits
+   ```
+
+## Architecture
+
+```
+Git Repository → MCP Server (mcp_server.py)
+    ↓
+    ├─ CodeRabbit: Structure code changes
+    ├─ Gemini: Generate documentation
+    ├─ Daytona: Execute code snippets
+    ├─ Galileo: Evaluate documentation quality
+    └─ Self-Correction Loop: Improve until quality threshold met
+    ↓
+Final Output → Git Repository (Commit to main)
 ```
 
-### POST `/api/update-documentation`
-Update documentation file.
+## Project Structure
 
-### POST `/api/commit-documentation`
-Commit documentation to Git.
-
-### GET `/api/git/diff`
-Get Git diff for a branch.
-
-### GET `/api/git/commits`
-Get recent commits.
-
-### WebSocket `/ws`
-Real-time updates for documentation changes.
+```
+.
+├── mcp_server.py              # Main MCP server entry point (for Cursor)
+├── src/
+│   ├── orchestrator.py        # MCP orchestrator with Gemini
+│   ├── git_handler.py         # Git integration
+│   ├── config.py              # Configuration management
+│   └── mcp_servers/
+│       ├── coderabbit.py      # CodeRabbit server
+│       ├── daytona_server.py  # Daytona server
+│       └── galileo_server.py  # Galileo server
+├── requirements.txt           # Dependencies
+└── MCP_SETUP.md              # Detailed MCP setup guide
+```
 
 ## System Components
 
@@ -159,7 +165,7 @@ Real-time updates for documentation changes.
 
 ## Workflow
 
-1. **Code Changes Detected**: Git diff or file changes trigger the system
+1. **Code Changes Detected**: Git diff triggers the system
 2. **Structure Analysis**: CodeRabbit analyzes and structures the changes
 3. **Documentation Generation**: Gemini generates initial documentation
 4. **Code Execution**: Daytona executes code snippets to validate examples
@@ -167,32 +173,41 @@ Real-time updates for documentation changes.
 6. **Self-Correction**: If quality is low, the system self-corrects using Gemini
 7. **Final Output**: High-quality documentation is committed to Git
 
-## Development
+## Testing Without API Keys
 
-### Project Structure
-```
-.
-├── src/
-│   ├── __init__.py
-│   ├── config.py              # Configuration management
-│   ├── orchestrator.py        # MCP orchestrator with Gemini
-│   ├── api.py                 # FastAPI application
-│   ├── git_handler.py         # Git integration
-│   └── mcp_servers/
-│       ├── coderabbit.py      # CodeRabbit server
-│       ├── daytona_server.py  # Daytona server
-│       └── galileo_server.py  # Galileo server
-├── main.py                    # Entry point
-├── requirements.txt           # Dependencies
-├── ARCHITECTURE.md           # System architecture
-└── README.md                 # This file
-```
+The system includes fallback mechanisms:
+- If Gemini is unavailable, basic documentation is generated
+- CodeRabbit uses local parsing (no API required)
+- Galileo uses local evaluation algorithms
+- Daytona is optional for code execution
+
+However, for best results, configure all API keys.
+
+## Troubleshooting
+
+### MCP Server Not Connecting
+
+1. **Check the path**: Ensure the path in `mcp.json` is correct
+2. **Check Python path**: Make sure `python` is in your PATH
+3. **Check dependencies**: Ensure all dependencies are installed:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Check logs**: Look for errors in Cursor's Developer Console (`Ctrl+Shift+I`)
+
+### Git Operations Fail
+
+- Ensure the directory is a Git repository (`git init`)
+- Check file permissions
+- Verify Git is installed and in PATH
+
+## Documentation
+
+- **MCP_SETUP.md** - Detailed MCP setup and usage guide
+- **ARCHITECTURE.md** - System architecture details
+- **SYSTEM_DESIGN.md** - Workflow diagrams and design
 
 ## License
 
 MIT License
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 

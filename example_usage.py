@@ -1,4 +1,8 @@
-"""Example usage of the Live Document Editor system."""
+"""Example usage of the Live Document Editor (Python API).
+
+Note: For MCP usage in Cursor, use the MCP tools directly.
+This example shows programmatic usage of the orchestrator.
+"""
 from src.orchestrator import MCPOrchestrator
 from src.git_handler import GitHandler
 
