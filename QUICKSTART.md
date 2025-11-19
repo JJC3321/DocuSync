@@ -7,8 +7,9 @@
 - Cursor IDE
 - API keys (optional - system works with fallbacks):
   - Google Gemini API (recommended)
-  - Daytona API (optional)
-  - Galileo.ai API (optional)
+  - Daytona API
+  - Galileo.ai API 
+  - CodeRabbit API 
 
 ## Setup Steps
 
@@ -27,15 +28,15 @@ Create a `.env` file with your API keys:
 # Gemini Configuration (recommended)
 GEMINI_API_KEY=your_gemini_api_key
 
-# Daytona Configuration (optional)
+# Daytona Configuration
 DAYTONA_API_KEY=your_daytona_api_key
 DAYTONA_API_URL=https://app.daytona.io/api
 
-# Galileo Configuration (optional)
+# Galileo Configuration
 GALILEO_API_KEY=your_galileo_api_key
 GALILEO_PROJECT_ID=your_project_id
 
-# CodeRabbit Configuration (optional)
+# CodeRabbit Configuration
 CODERABBIT_API_KEY=your_coderabbit_api_key
 
 # Git Configuration
