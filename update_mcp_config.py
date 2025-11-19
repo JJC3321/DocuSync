@@ -54,15 +54,15 @@ def update_mcp_config():
     with open(config_path, 'w') as f:
         json.dump(config, f, indent=2)
     
-    print(f"✅ Updated MCP configuration at: {config_path}")
+    print(f"Updated MCP configuration at: {config_path}")
     print(f"   MCP server path: {mcp_server_str}")
-    print("\n⚠️  Please restart Cursor for changes to take effect.")
+    print("\nPlease restart Cursor for changes to take effect.")
 
 if __name__ == "__main__":
     try:
         update_mcp_config()
     except Exception as e:
-        print(f"❌ Error updating MCP configuration: {e}")
+        print(f"Error updating MCP configuration: {e}")
         print("\nYou can manually update the configuration:")
         print(f"   File: {get_mcp_config_path()}")
         print("   Add the following to mcpServers:")

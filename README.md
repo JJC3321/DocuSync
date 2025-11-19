@@ -4,13 +4,13 @@ An intelligent MCP (Model Context Protocol) server that automatically generates 
 
 ## Features
 
-- 🤖 **AI-Powered Documentation**: Uses Gemini to generate clear, accurate documentation
-- 🔍 **Code Analysis**: CodeRabbit structures and analyzes code changes
-- ✅ **Code Execution**: Daytona executes code snippets in secure sandboxes
-- 📊 **Quality Evaluation**: Galileo.ai evaluates documentation accuracy and tone
-- 🔄 **Self-Correction**: Automatic improvement loop when quality thresholds aren't met
-- 🔀 **Git Integration**: Automatic commits and version control
-- 🎯 **MCP Integration**: Works directly in Cursor via Model Context Protocol
+- **AI-Powered Documentation**: Uses Gemini to generate clear, accurate documentation
+- **Code Analysis**: CodeRabbit structures and analyzes code changes
+- **Code Execution**: Daytona executes code snippets in secure sandboxes
+- **Quality Evaluation**: Galileo.ai evaluates documentation accuracy and tone
+- **Self-Correction**: Automatic improvement loop when quality thresholds aren't met
+- **Git Integration**: Automatic commits and version control
+- **MCP Integration**: Works directly in Cursor via Model Context Protocol
 
 ## Quick Start (MCP for Cursor)
 
